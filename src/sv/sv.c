@@ -21,7 +21,7 @@ Stock clone_stock(Stock stock) {
 void cria_stock(int codigo, int stock) {
     Stock stock_new = new_stock(codigo, stock);
 
-    int fd = open("stocks", O_WRONLY | O_APPEND);
+    int fd = open("files/stocks", O_WRONLY | O_APPEND);
     int l = write(fd, &stock_new, sizeof(stock_new));
     close(fd);
 }
@@ -29,23 +29,25 @@ void cria_stock(int codigo, int stock) {
 void atualiza_stock(int codigo, int stock) {
     Stock new_stock;
     
-    int fd = open("stocks", O_RDWR);
+    int fd = open("files/stocks", O_RDWR);
     int l = pread(fd, &new_stock, sizeof(new_stock), codigo * sizeof(new_stock));
 
     new_stock.stock = stock;
 
     pwrite(fd, &new_stock, sizeof(new_stock), codigo * sizeof(stock));
+    printf("%d\n", &new_stock.stock);
     close(fd);
 }
 
-void ler_stock(int codigo) {
+Stock ler_stock(int codigo) {
     Stock stock_new;
 
-    int fd = open("stocks", O_RDONLY);
+    int fd = open("files/stocks", O_RDONLY);
     int l = pread(fd, &stock_new, sizeof(stock_new), codigo * sizeof(stock_new));
 
-    printf("%d\n", stock_new.codigo);
-    printf("%d\n",stock_new.stock);
+    close(fd);
+
+    return stock_new;
     // Escreve o código no ecra
     // char cod[12];
     // char stock[4096];
@@ -61,6 +63,8 @@ Venda nova_venda(int codigo, int quantidade, float montante) {
     new_venda.codigo = codigo;
     new_venda.quantidade = quantidade;
     new_venda.montante = montante;
+
+    return new_venda;
 }
 
 Venda clone_venda(Venda old_venda) {

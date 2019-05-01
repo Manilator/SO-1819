@@ -35,6 +35,8 @@ int altera_nome(int codigo, char *nome, int posicao_atual);
 
 void altera_preco(int codigo, float preco);
 
+Artigo ler_artigo(int codigo);
+
 int ma_inserir(char *buf, int posicao_atual, int codigo_atual, int l);
 
 void ma_altera_nome(char *buf, int posicao_atual, int l);

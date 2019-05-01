@@ -14,6 +14,12 @@ struct Stock
     int stock;
 };
 
+struct Info
+{
+    int stock;
+    int preco;
+};
+
 struct Venda
 {
     int codigo;
@@ -22,6 +28,8 @@ struct Venda
 };
 
 typedef struct Stock Stock;
+
+typedef struct Info Info;
 
 typedef struct Venda Venda;
 
@@ -33,7 +41,7 @@ void cria_stock(int codigo, int stock);
 
 void atualiza_stock(int codigo, int stock);
 
-void ler_stock(int codigo);
+Stock ler_stock(int codigo);
 
 Venda nova_venda(int codigo, int quantidade, float montante);
 

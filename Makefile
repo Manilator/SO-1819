@@ -24,16 +24,16 @@ HEADERS = $(shell find $(HEADER_DIR) -name '*$(HEAD_EXT)')
 DEBUG_OBJECTS   = $(patsubst $(SOURCE_DIR)/%$(SRC_EXT), $(DEBUG_DIR)/%.o, $(SOURCES))
 
 ma:
-	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_MA) $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(MA_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/ma.h 
+	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_MA) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(MA_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/ma.h 
 
 sv:
-	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_SV) $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(SV_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/sv.h 
+	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_SV) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(SV_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/sv.h $(SOURCE_DIR)/$(MA_DIR)/ma.c $(HEADER_DIR)/ma.h 
 
 cv:
-	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_CV) $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(CV_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/cv.h 
+	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_CV) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(CV_DIR)/main.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h 
 
 ag:
-	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_AG) $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(AG_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/ag.h 
+	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_AG) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(AG_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/ag.h 
 
 debug: debug_dir $(DEBUG_DIR)/$(EXECUTABLE)
 

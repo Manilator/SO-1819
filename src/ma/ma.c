@@ -71,6 +71,17 @@ void altera_preco(int codigo, float preco) {
   close(fd);
 }
 
+Artigo ler_artigo(int codigo) {
+  Artigo artigo_new;
+
+    int fd = open("files/artigos", O_RDONLY);
+    int l = pread(fd, &artigo_new, sizeof(artigo_new), codigo * sizeof(artigo_new));
+
+    close(fd);
+
+    return artigo_new;
+}
+
 int ma_inserir(char *buf, int posicao_atual, int codigo_atual, int l) {
   int i = 2;
 
