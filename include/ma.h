@@ -6,9 +6,12 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
+#include <stdlib.h>
 
 //PARA REMOVER
 #include <stdio.h>
+
+#define STOCK_INICIAL 0
 
 struct Artigo
 {
