@@ -7,14 +7,33 @@ DEBUG_FLAGS      = -g
 PROFILE_FLAGS    = -pg
 
 SOURCE_DIR  = src
+MA_DIR		= ma
+SV_DIR		= sv
+CV_DIR		= cv
+AG_DIR		= ag
 HEADER_DIR  = include
 DEBUG_DIR   = debug
-EXECUTABLE  = program
+EXECUTABLE_MA  = program_ma
+EXECUTABLE_SV  = program_sv
+EXECUTABLE_CV  = program_cv
+EXECUTABLE_AG  = program_ag
 
 SOURCES = $(shell find $(SOURCE_DIR) -name '*$(SRC_EXT)')
 HEADERS = $(shell find $(HEADER_DIR) -name '*$(HEAD_EXT)')
 
 DEBUG_OBJECTS   = $(patsubst $(SOURCE_DIR)/%$(SRC_EXT), $(DEBUG_DIR)/%.o, $(SOURCES))
+
+ma:
+	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_MA) $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(MA_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/ma.h 
+
+sv:
+	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_SV) $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(SV_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/sv.h 
+
+cv:
+	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_CV) $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(CV_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/cv.h 
+
+ag:
+	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_AG) $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(AG_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/ag.h 
 
 debug: debug_dir $(DEBUG_DIR)/$(EXECUTABLE)
 
