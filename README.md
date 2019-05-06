@@ -2,7 +2,7 @@
 
 ## Sobre
 
- * [Enunciado](https://github.com/Manilator/SO/blob/master/Enunciado1819.pdf)
+ * [Enunciado](https://github.com/Manilator/SO_GV/blob/master/Enunciado1819.pdf)
 
 ## Desenvolvedores do Projeto
 
