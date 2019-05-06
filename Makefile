@@ -32,7 +32,7 @@ sv:
 	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_SV) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(SV_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/sv.h $(SOURCE_DIR)/$(MA_DIR)/ma.c $(HEADER_DIR)/ma.h 
 
 cv:
-	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_CV) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(CV_DIR)/main.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h 
+	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_CV) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(CV_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/cv.h 
 
 ag:
 	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_AG) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(AG_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/ag.h 
