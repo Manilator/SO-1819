@@ -6,6 +6,6 @@
 
 ## Desenvolvedores do Projeto
 
-* Gonçalo Almeida  | a84610
-* Miguel Solino   | A86435
-* Rúben Rodrigues | a80960
+* Gonçalo Almeida   | a84610
+* Miguel Solino     | a86435
+* Rúben Rodrigues   | a80960
