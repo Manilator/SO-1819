@@ -16,12 +16,11 @@ int main() {
 
       int l = readln(fifo0, buf, sizeof(buf));
 
-      int i = 0;
       int espacos = 0;
-      char cod[12] = {0};
 
       if ('i' == buf[0]) {
         sv_criaStock(buf, l);
+        memset(buf,0,sizeof(buf));
       }
 
       else if (buf[0] == 0) {
@@ -36,9 +35,11 @@ int main() {
 
         if (0 == espacos) {
           sv_mostraStock(buf, l);
+          memset(buf,0,sizeof(buf));
         }
         if (1 == espacos) {
           sv_atualizaStock(buf, l);
+          memset(buf,0,sizeof(buf));
         }
       }
       close(fifo0);

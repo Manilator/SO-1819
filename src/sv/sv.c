@@ -41,6 +41,7 @@ int atualiza_stock(int codigo, int stock) {
   return new_stock.stock;
 }
 
+
 Stock ler_stock(int codigo) {
   Stock stock_new;
 
@@ -59,14 +60,16 @@ Stock ler_stock(int codigo) {
   // write(1, &stock, sizeof(d));
 }
 
-Venda nova_venda(int codigo, int quantidade, float montante) {
+Venda new_venda(int codigo, int quantidade) {
   Venda new_venda;
+  Artigo new_artigo = ler_artigo(codigo);
 
   new_venda.codigo = codigo;
   new_venda.quantidade = quantidade;
-  new_venda.montante = montante;
 
-  return new_venda;
+  new_venda.montante = quantidade * new_artigo.preco;
+
+  return new_venda; 
 }
 
 Venda clone_venda(Venda old_venda) {
@@ -79,11 +82,11 @@ Venda clone_venda(Venda old_venda) {
   return new_venda;
 }
 
-void cria_venda(int codigo, int quantidade, float montante) {
-  Venda new_venda = nova_venda(codigo, quantidade, montante);
+void cria_venda(int codigo, int quantidade) {
+  Venda venda_new = new_venda(codigo, quantidade);
 
   int fd = open("vendas", O_WRONLY | O_APPEND);
-  write(fd, &new_venda, sizeof(Venda));
+  write(fd, &venda_new, sizeof(Venda));
   close(fd);
 }
 
@@ -96,8 +99,6 @@ void sv_criaStock(char *buf, int l) {
   }
   cria_stock(atoi(cod), 0);
   printf("Criei Stock\n");
-
-  memset(buf, 0, sizeof(buf));
 }
 
 void sv_mostraStock(char *buf, int l) {
@@ -111,7 +112,7 @@ void sv_mostraStock(char *buf, int l) {
   Info new_info;
   new_info.stock = ler_stock(atoi(cod)).stock;
   new_info.preco = ler_artigo(atoi(cod)).preco;
-  memset(cod, 0, sizeof(buf));
+  memset(cod, 0, sizeof(cod));
 
   int fifo1 = open("files/fifo_out", O_WRONLY);
 
@@ -136,6 +137,8 @@ void sv_atualizaStock(char *buf, int l) {
   for (int j = 0; i < l && buf[i] != ' '; i++, j++) {
     quantidade[j] = buf[i];
   }
+
+  cria_venda(atoi(cod), atoi(quantidade));
 
   int new_stock;
   new_stock = atualiza_stock(atoi(cod), atoi(quantidade));
