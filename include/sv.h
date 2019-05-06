@@ -10,6 +10,10 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "sv.h"
+#include "ma.h"
+#include "utils.h"
+
 struct Stock
 {
     int codigo;
@@ -50,5 +54,11 @@ Venda nova_venda(int codigo, int quantidade, float montante);
 Venda clone_venda(Venda old_venda);
 
 void cria_venda(int codigo, int quantidade, float montante);
+
+void sv_criaStock(char *buf, int l);
+
+void sv_mostraStock(char *buf, int l);
+
+void sv_atualizaStock(char *buf, int l);
 
 #endif /* SERVIDOR_H*/
