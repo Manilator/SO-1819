@@ -23,27 +23,29 @@ void cria_stock(int codigo, int stock) {
 
     int fd = open("files/stocks", O_WRONLY | O_APPEND);
     int l = write(fd, &stock_new, sizeof(stock_new));
+    printf("%d\n",l);
     close(fd);
 }
 
-void atualiza_stock(int codigo, int stock) {
+int atualiza_stock(int codigo, int stock) {
     Stock new_stock;
     
     int fd = open("files/stocks", O_RDWR);
-    int l = pread(fd, &new_stock, sizeof(new_stock), codigo * sizeof(new_stock));
+    pread(fd, &new_stock, sizeof(new_stock), codigo * sizeof(Stock));
 
-    new_stock.stock = stock;
+    new_stock.stock += stock;
 
-    pwrite(fd, &new_stock, sizeof(new_stock), codigo * sizeof(stock));
-    printf("%d\n", &new_stock.stock);
+    pwrite(fd, &new_stock, sizeof(new_stock), codigo * sizeof(Stock));
     close(fd);
+
+    return new_stock.stock;
 }
 
 Stock ler_stock(int codigo) {
     Stock stock_new;
 
     int fd = open("files/stocks", O_RDONLY);
-    int l = pread(fd, &stock_new, sizeof(stock_new), codigo * sizeof(stock_new));
+    pread(fd, &stock_new, sizeof(stock_new), codigo * sizeof(stock_new));
 
     close(fd);
 
@@ -81,7 +83,7 @@ void cria_venda(int codigo, int quantidade, float montante) {
     Venda new_venda = nova_venda(codigo, quantidade, montante);
 
     int fd = open("vendas", O_WRONLY | O_APPEND);
-    int l = write(fd, &new_venda, sizeof(new_venda));
+    write(fd, &new_venda, sizeof(new_venda));
     close(fd);
 }
 

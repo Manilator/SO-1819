@@ -1,6 +1,8 @@
 #ifndef SERVIDOR_H
 #define SERVIDOR_H
 
+#define _XOPEN_SOURCE 500
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -39,7 +41,7 @@ Stock clone_stock(Stock stock);
 
 void cria_stock(int codigo, int stock);
 
-void atualiza_stock(int codigo, int stock);
+int atualiza_stock(int codigo, int stock);
 
 Stock ler_stock(int codigo);
 
