@@ -21,31 +21,35 @@ Stock clone_stock(Stock stock) {
 void cria_stock(int codigo, int stock) {
     Stock stock_new = new_stock(codigo, stock);
 
-    int fd = open("stocks", O_WRONLY | O_APPEND);
+    int fd = open("files/stocks", O_WRONLY | O_APPEND);
     int l = write(fd, &stock_new, sizeof(stock_new));
+    printf("%d\n",l);
     close(fd);
 }
 
-void atualiza_stock(int codigo, int stock) {
+int atualiza_stock(int codigo, int stock) {
     Stock new_stock;
     
-    int fd = open("stocks", O_RDWR);
-    int l = pread(fd, &new_stock, sizeof(new_stock), codigo * sizeof(new_stock));
+    int fd = open("files/stocks", O_RDWR);
+    pread(fd, &new_stock, sizeof(new_stock), codigo * sizeof(Stock));
 
-    new_stock.stock = stock;
+    new_stock.stock += stock;
 
-    pwrite(fd, &new_stock, sizeof(new_stock), codigo * sizeof(stock));
+    pwrite(fd, &new_stock, sizeof(new_stock), codigo * sizeof(Stock));
     close(fd);
+
+    return new_stock.stock;
 }
 
-void ler_stock(int codigo) {
+Stock ler_stock(int codigo) {
     Stock stock_new;
 
-    int fd = open("stocks", O_RDONLY);
-    int l = pread(fd, &stock_new, sizeof(stock_new), codigo * sizeof(stock_new));
+    int fd = open("files/stocks", O_RDONLY);
+    pread(fd, &stock_new, sizeof(stock_new), codigo * sizeof(stock_new));
 
-    printf("%d\n", stock_new.codigo);
-    printf("%d\n",stock_new.stock);
+    close(fd);
+
+    return stock_new;
     // Escreve o código no ecra
     // char cod[12];
     // char stock[4096];
@@ -61,6 +65,8 @@ Venda nova_venda(int codigo, int quantidade, float montante) {
     new_venda.codigo = codigo;
     new_venda.quantidade = quantidade;
     new_venda.montante = montante;
+
+    return new_venda;
 }
 
 Venda clone_venda(Venda old_venda) {
@@ -77,7 +83,7 @@ void cria_venda(int codigo, int quantidade, float montante) {
     Venda new_venda = nova_venda(codigo, quantidade, montante);
 
     int fd = open("vendas", O_WRONLY | O_APPEND);
-    int l = write(fd, &new_venda, sizeof(new_venda));
+    write(fd, &new_venda, sizeof(new_venda));
     close(fd);
 }
 

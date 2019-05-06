@@ -1,6 +1,8 @@
 #ifndef MANUTENCAO_H
 #define MANUTENCAO_H
 
+#define _XOPEN_SOURCE 500
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -35,11 +37,13 @@ int altera_nome(int codigo, char *nome, int posicao_atual);
 
 void altera_preco(int codigo, float preco);
 
+Artigo ler_artigo(int codigo);
+
 int ma_inserir(char *buf, int posicao_atual, int codigo_atual, int l);
 
 void ma_altera_nome(char *buf, int posicao_atual, int l);
 
-void ma_altera_preco(char *buf, int posicao_atual, int l);
+void ma_altera_preco(char *buf, int l);
 
 
 #endif /* MANUTENCAO_H*/
