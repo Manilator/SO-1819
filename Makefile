@@ -23,6 +23,8 @@ HEADERS = $(shell find $(HEADER_DIR) -name '*$(HEAD_EXT)')
 
 DEBUG_OBJECTS   = $(patsubst $(SOURCE_DIR)/%$(SRC_EXT), $(DEBUG_DIR)/%.o, $(SOURCES))
 
+all: ma sv cv
+
 ma:
 	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_MA) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(MA_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/ma.h 
 
