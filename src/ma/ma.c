@@ -75,7 +75,7 @@ Artigo ler_artigo(int codigo) {
   Artigo artigo_new;
 
     int fd = open("files/artigos", O_RDONLY);
-    int l = pread(fd, &artigo_new, sizeof(artigo_new), codigo * sizeof(artigo_new));
+    pread(fd, &artigo_new, sizeof(artigo_new), codigo * sizeof(artigo_new));
 
     close(fd);
 
@@ -107,11 +107,6 @@ int ma_inserir(char *buf, int posicao_atual, int codigo_atual, int l) {
       write(1, &cod, sizeof(e));
       ++codigo_atual;
 
-      // Reseta os array
-      memset(buf, 0, sizeof(buf));
-      memset(nome, 0, sizeof(nome));
-      memset(valor, 0, sizeof(valor));
-
       return codigo_atual;
 }
 
@@ -135,13 +130,9 @@ void ma_altera_nome(char *buf, int posicao_atual, int l) {
       // Alterar o nome
       altera_nome(atoi(codigo), nome, posicao_atual);
 
-      // Reseta os array
-      memset(buf, 0, sizeof(buf));
-      memset(nome, 0, sizeof(nome));
-      memset(codigo, 0, sizeof(codigo));
 }
 
-void ma_altera_preco(char *buf, int posicao_atual, int l) {
+void ma_altera_preco(char *buf, int l) {
   int i = 2;
 
       // Ler o código
@@ -161,10 +152,6 @@ void ma_altera_preco(char *buf, int posicao_atual, int l) {
       // Alterar o valor
       altera_preco(atoi(codigo), preco);
 
-      // Reseta os array
-      memset(buf, 0, sizeof(buf));
-      memset(valor, 0, sizeof(valor));
-      memset(codigo, 0, sizeof(codigo));
 }
 
 

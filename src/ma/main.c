@@ -1,12 +1,11 @@
 #include "ma.h"
 #include "utils.h"
 
-int main(int argc, char const *argv[]) {
+int main() {
 
   int fd1 = open("files/artigos", O_CREAT | O_TRUNC, 0666);
   int fd2 = open("files/strings", O_CREAT | O_TRUNC, 0666);
   int fifo0 = open("files/fifo_in", O_WRONLY);
-  int fifo1 = open("files/fifo_out", O_RDONLY);
 
   char buf[4096] = {0};
   int posicao_atual = 0;
@@ -15,18 +14,19 @@ int main(int argc, char const *argv[]) {
 
       while ((l = readln(0, buf, 4096))) {
         if ('i' == buf[0]) {
-          write(fifo0, buf, sizeof(buf));
+          write(fifo0, buf, l);
           codigo = ma_inserir(buf, posicao_atual, codigo, l);
         }
-        if ('n' == buf[0]) {
+        else if ('n' == buf[0]) {
           ma_altera_nome(buf, posicao_atual, l);  
         }
-        if ('p' == buf[0]) {
-          ma_altera_preco(buf, posicao_atual, l);
+        else if ('p' == buf[0]) {
+          ma_altera_preco(buf, l);
         }
-        if ('b' == buf[0]) {
+        else if ('b' == buf[0]) {
           break;
         }
+        memset(buf, 0, sizeof(buf));
       }
 
   close(fd1);
