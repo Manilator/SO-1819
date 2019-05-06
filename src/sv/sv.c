@@ -23,18 +23,15 @@ void cria_stock(int codigo, int stock) {
 
   int fd = open("files/stocks", O_WRONLY | O_APPEND);
   int l = write(fd, &stock_new, sizeof(Stock));
-  printf("%d\n", l);
   close(fd);
 }
 
 int atualiza_stock(int codigo, int stock) {
-  Stock new_stock;
-
-  int fd = open("files/stocks", O_RDWR);
-  pread(fd, &new_stock, sizeof(Stock), codigo * sizeof(Stock));
+  Stock new_stock = ler_stock(codigo);
 
   new_stock.stock += stock;
 
+  int fd = open("files/stocks", O_RDWR);
   pwrite(fd, &new_stock, sizeof(Stock), codigo * sizeof(Stock));
   close(fd);
 
@@ -85,7 +82,7 @@ Venda clone_venda(Venda old_venda) {
 void cria_venda(int codigo, int quantidade) {
   Venda venda_new = new_venda(codigo, quantidade);
 
-  int fd = open("vendas", O_WRONLY | O_APPEND);
+  int fd = open("files/vendas", O_WRONLY | O_APPEND);
   write(fd, &venda_new, sizeof(Venda));
   close(fd);
 }
