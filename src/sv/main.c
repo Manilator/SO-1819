@@ -1,50 +1,56 @@
 #include "sv.h"
+#include <string.h>
 
 int main() {
 
   mkfifo("files/fifo_in", 0666);
-  mkfifo("files/fifo_out", 0666);
-
-  char buf[4096] = {0};
 
   if (!fork()) {
+
     for (;;) {
       printf("Entrei no loop\n");
-      int fd1 = open("files/stocks", O_CREAT, 0666);
-      int fd2 = open("files/vendas", O_CREAT, 0666);
+
+      int fifo1;
+      int l;
+      PFifo fifoid;
       int fifo0 = open("files/fifo_in", O_RDONLY);
-
-      int l = readln(fifo0, buf, sizeof(buf));
-
-      int espacos = 0;
-
-      if ('i' == buf[0]) {
-        sv_criaStock(buf, l);
-        memset(buf,0,sizeof(buf));
+      if (fifo0 == 0) {
+        printf("Error opening Fifo_In\n");
       }
+      while (l = read(fifo0, &fifoid, sizeof(PFifo))) {
+        printf("Inicio do While\n");
+        if (l == 0) {
+          printf("Error reading from client\n");
+        }
 
-      else if (buf[0] == 0) {
-      }
+        int espacos = -1;
+        printf("%d\n", l);
+        l = strlen(fifoid.buf);
 
-      else {
-        for (int j = 0; j < l; j++) {
-          if (buf[j] == ' ') {
-            ++espacos;
+        char fifoname[21] = {0};
+        sprintf(fifoname, "/tmp/%dfifo", fifoid.fifoname);
+
+        if ('i' == fifoid.buf[0]) {
+          sv_criaStock(fifoid.buf, l);
+        } else if (fifoid.buf[0] == 0 || fifoid.buf[0] == '\n') {
+          fifo1 = open(fifoname, O_WRONLY);
+        } else {
+          espacos = 0;
+          for (int j = 0; j < l; j++) {
+            if (fifoid.buf[j] == ' ') {
+              ++espacos;
+            }
+          }
+
+          if (0 == espacos) {
+            fifo1 = sv_mostraStock(fifoid, l);
+          } else if (1 == espacos) {
+            fifo1 = sv_atualizaStock(fifoid, l);
           }
         }
-
-        if (0 == espacos) {
-          sv_mostraStock(buf, l);
-          memset(buf,0,sizeof(buf));
-        }
-        if (1 == espacos) {
-          sv_atualizaStock(buf, l);
-          memset(buf,0,sizeof(buf));
-        }
+        fifoid = EmptyStruct;
       }
       close(fifo0);
-      close(fd1);
-      close(fd2);
     }
     _exit(0);
   }

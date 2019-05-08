@@ -27,6 +27,14 @@ struct Info
     int preco;
 };
 
+struct PFifo
+{
+    pid_t fifoname;
+    char buf[256];
+};
+
+
+
 struct Venda
 {
     int codigo;
@@ -38,7 +46,11 @@ typedef struct Stock Stock;
 
 typedef struct Info Info;
 
+typedef struct PFifo PFifo;
+
 typedef struct Venda Venda;
+
+static const struct PFifo EmptyStruct;
 
 Stock new_stock(int codigo, int stock);
 
@@ -58,8 +70,8 @@ void cria_venda(int codigo, int quantidade);
 
 void sv_criaStock(char *buf, int l);
 
-void sv_mostraStock(char *buf, int l);
+int sv_mostraStock(PFifo fifoid, int l);
 
-void sv_atualizaStock(char *buf, int l);
+int sv_atualizaStock(PFifo fifoid, int l);
 
 #endif /* SERVIDOR_H*/

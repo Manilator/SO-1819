@@ -22,7 +22,12 @@ void cria_stock(int codigo, int stock) {
   Stock stock_new = new_stock(codigo, stock);
 
   int fd = open("files/stocks", O_WRONLY | O_APPEND);
-  int l = write(fd, &stock_new, sizeof(Stock));
+  printf("Stocks\n");
+  if (fd == 0) {
+    printf("Error opening stocks file\n");
+  }
+  write(fd, &stock_new, sizeof(Stock));
+  printf("Guardei um novo stock\n");
   close(fd);
 }
 
@@ -32,18 +37,33 @@ int atualiza_stock(int codigo, int stock) {
   new_stock.stock += stock;
 
   int fd = open("files/stocks", O_RDWR);
-  pwrite(fd, &new_stock, sizeof(Stock), codigo * sizeof(Stock));
+  printf("Stocks\n");
+  if (fd == 0) {
+    printf("Error opening stocks file\n");
+  }
+  int p = pwrite(fd, &new_stock, sizeof(Stock), codigo * sizeof(Stock));
+  printf("Li do Ficheiro Stocks\n");
+  if (p == 0) {
+    printf("Error writting on stocks file\n");
+  }
   close(fd);
 
   return new_stock.stock;
 }
 
-
 Stock ler_stock(int codigo) {
   Stock stock_new;
 
   int fd = open("files/stocks", O_RDONLY);
-  pread(fd, &stock_new, sizeof(Stock), codigo * sizeof(Stock));
+  printf("Stocks\n");
+  if (fd == 0) {
+    printf("Error opening stocks file\n");
+  }
+  int p = pread(fd, &stock_new, sizeof(Stock), codigo * sizeof(Stock));
+  printf("Li do ficheiro stocks\n");
+  if (p == 0) {
+    printf("Error reading from stocks file\n");
+  }
 
   close(fd);
 
@@ -66,7 +86,7 @@ Venda new_venda(int codigo, int quantidade) {
 
   new_venda.montante = quantidade * new_artigo.preco;
 
-  return new_venda; 
+  return new_venda;
 }
 
 Venda clone_venda(Venda old_venda) {
@@ -83,7 +103,15 @@ void cria_venda(int codigo, int quantidade) {
   Venda venda_new = new_venda(codigo, quantidade);
 
   int fd = open("files/vendas", O_WRONLY | O_APPEND);
-  write(fd, &venda_new, sizeof(Venda));
+  printf("Vendas\n");
+  if (fd == 0) {
+    printf("Error opening vendas file\n");
+  }
+  int p = write(fd, &venda_new, sizeof(Venda));
+  printf("Guardei uma nova venda\n");
+  if (p == 0) {
+    printf("Error writting to vendas file\n");
+  }
   close(fd);
 }
 
@@ -98,41 +126,52 @@ void sv_criaStock(char *buf, int l) {
   printf("Criei Stock\n");
 }
 
-void sv_mostraStock(char *buf, int l) {
+int sv_mostraStock(PFifo fifoid, int l) {
   char cod[12] = {0};
   int i;
 
-  for (i = 0; i < l && buf[i] != ' '; i++) {
-    cod[i] = buf[i];
+  for (i = 0; i < l && fifoid.buf[i] != ' '; i++) {
+    cod[i] = fifoid.buf[i];
   }
 
   Info new_info;
   new_info.stock = ler_stock(atoi(cod)).stock;
   new_info.preco = ler_artigo(atoi(cod)).preco;
+  printf("Stock lido do ficheiro: %d\n", new_info.stock);
+  printf("Preço lido do ficheiro: %d\n", new_info.preco);
   memset(cod, 0, sizeof(cod));
 
-  int fifo1 = open("files/fifo_out", O_WRONLY);
+  char fifoname[21] = {0};
+  sprintf(fifoname, "/tmp/%dfifo", fifoid.fifoname);
+  int fifo1 = open(fifoname, O_WRONLY);
+  printf("Fifo único %d\n", fifo1);
+  if (fifo1 == 0) {
+    printf("Error opening unique client fifo\n");
+  }
 
-  write(fifo1, &new_info, sizeof(Info));
+  int p = write(fifo1, &new_info, sizeof(Info));
+  if (p == 0) {
+    printf("Error writting to unique client fifo\n");
+  }
   printf("Devolvi pelo pipe a info\n");
 
-  close(fifo1);
+  return fifo1;
 }
 
-void sv_atualizaStock(char *buf, int l) {
+int sv_atualizaStock(PFifo fifoid, int l) {
   char quantidade[12] = {0};
   char cod[12] = {0};
   int i;
 
-  for (i = 0; i < l && buf[i] != ' '; i++) {
-    cod[i] = buf[i];
+  for (i = 0; i < l && fifoid.buf[i] != ' '; i++) {
+    cod[i] = fifoid.buf[i];
   }
 
-  for (; i < l && buf[i] == ' '; i++) {
+  for (; i < l && fifoid.buf[i] == ' '; i++) {
   }
 
-  for (int j = 0; i < l && buf[i] != ' '; i++, j++) {
-    quantidade[j] = buf[i];
+  for (int j = 0; i < l && fifoid.buf[i] != ' '; i++, j++) {
+    quantidade[j] = fifoid.buf[i];
   }
 
   cria_venda(atoi(cod), atoi(quantidade));
@@ -143,10 +182,20 @@ void sv_atualizaStock(char *buf, int l) {
   sprintf(return_stock, "%d\n", new_stock);
   printf("Atualizei o Stock\n");
 
-  int fifo1 = open("files/fifo_out", O_WRONLY);
+  char fifoname[21] = {0};
+  sprintf(fifoname, "/tmp/%dfifo", fifoid.fifoname);
+  int fifo1 = open(fifoname, O_WRONLY);
+  printf("Fifo único %d\n", fifo1);
+  if (fifo1 == 0) {
+    printf("Error opening unique client fifo\n");
+  }
 
-  write(fifo1, return_stock, sizeof(return_stock));
+  int p = write(fifo1, return_stock, sizeof(return_stock));
+  printf("p%d\n", p);
+  if (p == 0) {
+    printf("Error writting to unique client fifo\n");
+  }
   printf("Devolvi pelo pipe o novo stock\n");
 
-  close(fifo1);
+  return fifo1;
 }
