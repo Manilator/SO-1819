@@ -22,12 +22,15 @@ void store_artigo(Artigo artigo) {
 
   int fd = open("files/artigos", O_WRONLY | O_APPEND);
   write(fd, &artigo, sizeof(Artigo));
+  close(fd);
 }
 
 int store_string(char *nome, int posicao_atual) {
 
   int fd = open("files/strings", O_WRONLY | O_APPEND);
   int l = write(fd, nome, strlen(nome)) + posicao_atual;
+
+  close(fd);
 
   return l + posicao_atual;
 }
@@ -86,42 +89,43 @@ int ma_inserir(char *buf, int posicao_atual, int codigo_atual, int l) {
   int i = 2;
 
       // Guarda o nome
-      char nome[50];
+      char nome[4096] = {0};
       for (int j = 0; buf[i] != ' ' && i < l; i++, j++) {
         nome[j] = buf[i];
       }
       ++i;
 
       // Guarda o valor
-      char valor[50];
+      char valor[12] = {0};
       for (int j = 0; buf[i] != '\n' && i < l; i++, j++) {
         valor[j] = buf[i];
       }
       float preco = atof(valor);
 
       posicao_atual = store(preco, nome, posicao_atual);
-
       // Escreve o código no ecra
       char cod[12];
       int e = sprintf(cod, "%d\n", codigo_atual);
       write(1, &cod, sizeof(e));
       ++codigo_atual;
 
+      memset(nome, 0, sizeof(nome));
+      memset(valor, 0, sizeof(valor));
       return codigo_atual;
 }
 
 void ma_altera_nome(char *buf, int posicao_atual, int l) {
-  int i = 2;
+      int i = 2;
 
-      // Ler o código
-      char codigo[12];
+      // Ler o código 
+      char codigo[12] = {0};
       for (int j = 0; buf[i] != ' ' && i < l; i++, j++) {
         codigo[j] = buf[i];
       }
       i++;
 
       // Ler o nome
-      char nome[50];
+      char nome[4096] = {0};
       for (int j = 0; buf[i] != ' ' && buf[i] != '\n' && i < l; i++, j++) {
         nome[j] = buf[i];
       }
@@ -129,6 +133,8 @@ void ma_altera_nome(char *buf, int posicao_atual, int l) {
 
       // Alterar o nome
       altera_nome(atoi(codigo), nome, posicao_atual);
+      memset(nome, 0, sizeof(nome));
+      memset(codigo, 0, sizeof(codigo));
 
 }
 
@@ -136,14 +142,14 @@ void ma_altera_preco(char *buf, int l) {
   int i = 2;
 
       // Ler o código
-      char codigo[12];
+      char codigo[12] = {0};
       for (int j = 0; buf[i] != ' ' && i < l; i++, j++) {
         codigo[j] = buf[i];
       }
       i++;
 
       // Ler o valor
-      char valor[50];
+      char valor[12] = {0};
       for (int j = 0; buf[i] != '\n' && i < l; i++, j++) {
         valor[j] = buf[i];
       }
@@ -151,7 +157,9 @@ void ma_altera_preco(char *buf, int l) {
 
       // Alterar o valor
       altera_preco(atoi(codigo), preco);
-
+      
+      memset(codigo, 0, sizeof(codigo));
+      memset(valor, 0, sizeof(valor));
 }
 
 
