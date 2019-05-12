@@ -13,29 +13,30 @@ CV_DIR		= cv
 AG_DIR		= ag
 HEADER_DIR  = include
 DEBUG_DIR   = debug
-EXECUTABLE_MA  = program_ma
-EXECUTABLE_SV  = program_sv
-EXECUTABLE_CV  = program_cv
-EXECUTABLE_AG  = program_ag
+FILES_DIR   = files
+EXECUTABLE_MA  = ma
+EXECUTABLE_SV  = sv
+EXECUTABLE_CV  = cv
+EXECUTABLE_AG  = ag
 
 SOURCES = $(shell find $(SOURCE_DIR) -name '*$(SRC_EXT)')
 HEADERS = $(shell find $(HEADER_DIR) -name '*$(HEAD_EXT)')
 
 DEBUG_OBJECTS   = $(patsubst $(SOURCE_DIR)/%$(SRC_EXT), $(DEBUG_DIR)/%.o, $(SOURCES))
 
-all: ma sv cv
+all: ma sv cv ag
 
 ma:
-	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_MA) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(MA_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/ma.h 
+	$(CC) -o $(EXECUTABLE_MA) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(MA_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/ma.h 
 
 sv:
-	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_SV) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(SV_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/sv.h $(SOURCE_DIR)/$(MA_DIR)/ma.c $(HEADER_DIR)/ma.h 
+	$(CC) -o $(EXECUTABLE_SV) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(SV_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/sv.h $(SOURCE_DIR)/$(MA_DIR)/ma.c $(HEADER_DIR)/ma.h 
 
 cv:
-	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_CV) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(CV_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/cv.h 
+	$(CC) -o $(EXECUTABLE_CV) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(CV_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h 
 
 ag:
-	$(CC) -o $(SOURCE_DIR)/$(EXECUTABLE_AG) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(AG_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/ag.h 
+	$(CC) -o $(EXECUTABLE_AG) -g $(WARN_FLAGS) -I$(HEADER_DIR) $(SOURCE_DIR)/$(AG_DIR)/*.c $(SOURCE_DIR)/utils.c $(HEADER_DIR)/utils.h $(HEADER_DIR)/ag.h $(SOURCE_DIR)/$(MA_DIR)/ma.c $(HEADER_DIR)/ma.h 
 
 debug: debug_dir $(DEBUG_DIR)/$(EXECUTABLE)
 
@@ -46,7 +47,7 @@ docs: $(HEADERS)
 	doxygen Doxyfile
 
 clean:
-	rm -rf $(BUILD_DIR) $(DEBUG_DIR) $(PROFILE_DIR) vgcore* *.out
+	rm -rf $(EXECUTABLE_MA) $(EXECUTABLE_CV) $(EXECUTABLE_AG) $(EXECUTABLE_SV) $(FILES_DIR)/* $(BUILD_DIR) $(DEBUG_DIR) $(PROFILE_DIR) vgcore* *.out
 
 debug_dir:
 	@mkdir -p $(DEBUG_DIR)
