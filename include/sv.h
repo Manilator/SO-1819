@@ -3,75 +3,102 @@
 
 #define _XOPEN_SOURCE 500
 
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <string.h>
-#include <stdio.h>
+/* Tamanho do buffer */
+#define BUFFER_SIZE 4096
 
-#include "sv.h"
+/* Tamanho máximo de um inteiro */
+#define MAX_INT_SIZE 12
+
+#include <ctype.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
 #include "ma.h"
-#include "cv.h"
 #include "utils.h"
 
-struct Stock
-{
-    int codigo;
-    int stock;
-};
+/* Stock */
+typedef struct Stock {
+  int codigo;
+  int stock;
+} Stock;
 
-struct Info
-{
-    int stock;
-    int preco;
-};
+/* Info retornada pelo servidor */
+typedef struct Info {
+  int stock;
+  float preco;
+} Info;
 
-struct PFifo
-{
-    pid_t fifoname;
-    char buf[256];
-};
+/* Info enviada para o servidor */
+typedef struct PFifo {
+  pid_t fifoname;
+  int cod;
+  int quantidade;
+  char comando;
+  float preco;
+} PFifo;
 
+/* Reset da Struct PFifo */
+static const struct PFifo EmptyPFifo = {0};
 
+/* Reset da Struct Info */
+static const struct Info EmptyInfo = {0};
 
-struct Venda
-{
-    int codigo;
-    int quantidade;
-    float montante;
-};
-
-typedef struct Stock Stock;
-
-typedef struct Info Info;
-
-typedef struct PFifo PFifo;
-
-typedef struct Venda Venda;
-
-static const struct PFifo EmptyStruct;
-
+/**
+ * Cria um novo stock
+ *
+ * @param codigo Código do artigo.
+ * @param stock Stock do artigo.
+ * @returns A struct Stock.
+ */
 Stock new_stock(int codigo, int stock);
 
-Stock clone_stock(Stock stock);
-
+/**
+ * Guarda o stock de um artigo em ficheiro.
+ *
+ * @param codigo Código do artigo.
+ * @param stock Stock do artigo.
+ */
 void cria_stock(int codigo, int stock);
 
+/**
+ * Atualiza o stock de um artigo.
+ *
+ * @param codigo Código do artigo a ser atualizado.
+ * @param stock Novo stock do artigo.
+ * @returns O novo stock.
+ */
 int atualiza_stock(int codigo, int stock);
 
+/**
+ * Lê o stock de um artigo.
+ *
+ * @param codigo Código do artigo a ser lido.
+ * @returns A struct Stock.
+ */
 Stock ler_stock(int codigo);
 
-Venda new_venda(int codigo, int quantidade);
+/**
+ * Cria uma string com as informações de um venda.
+ *
+ * @param *venda_new String onde vão ser guardadas as informações.
+ * @param codigo Código do artigo.
+ * @param quantidade Quantidade da venda.
+ */
+void new_venda(char *venda_new, int codigo, int quantidade);
 
-Venda clone_venda(Venda old_venda);
-
-void cria_venda(int codigo, int quantidade);
-
-void sv_criaStock(char *buf, int l);
-
-int sv_mostraStock(PFifo fifoid, int l);
-
-int sv_atualizaStock(PFifo fifoid, int l);
+/**
+ * Guarda a venda num ficheiro.
+ *
+ * @param *venda_new String da venda que vai ser guardada.
+ * @param codigo Código do artigo.
+ * @param quantidade Quantidade da venda.
+ */
+void cria_venda(char *venda_new, int codigo, int quantidade);
 
 #endif /* SERVIDOR_H*/
