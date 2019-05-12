@@ -8,48 +8,35 @@ int main() {
   if (!fork()) {
 
     for (;;) {
-      printf("Entrei no loop\n");
-
-      int fifo1;
+      char venda_new[BUFFER_SIZE];
       int l;
-      PFifo fifoid;
+      PFifo fifoid = EmptyPFifo;
       int fifo0 = open("files/fifo_in", O_RDONLY);
-      if (fifo0 == 0) {
-        printf("Error opening Fifo_In\n");
-      }
-      while (l = read(fifo0, &fifoid, sizeof(PFifo))) {
-        printf("Inicio do While\n");
-        if (l == 0) {
-          printf("Error reading from client\n");
-        }
-
-        int espacos = -1;
-        printf("%d\n", l);
-        l = strlen(fifoid.buf);
-
+      while ((l = read(fifo0, &fifoid, sizeof(PFifo)))) {
         char fifoname[21] = {0};
         sprintf(fifoname, "/tmp/%dfifo", fifoid.fifoname);
 
-        if ('i' == fifoid.buf[0]) {
-          sv_criaStock(fifoid.buf, l);
-        } else if (fifoid.buf[0] == 0 || fifoid.buf[0] == '\n') {
-          fifo1 = open(fifoname, O_WRONLY);
-        } else {
-          espacos = 0;
-          for (int j = 0; j < l; j++) {
-            if (fifoid.buf[j] == ' ') {
-              ++espacos;
-            }
-          }
-
-          if (0 == espacos) {
-            fifo1 = sv_mostraStock(fifoid, l);
-          } else if (1 == espacos) {
-            fifo1 = sv_atualizaStock(fifoid, l);
-          }
+        if ('i' == fifoid.comando) {
+          cria_stock(fifoid.cod, 0);
+        } else if (fifoid.quantidade == 0 && fifoid.cod != -1) {
+          Info new_info = EmptyInfo;
+          new_info.stock = ler_stock(fifoid.cod).stock;
+          new_info.preco = ler_artigo(fifoid.cod).preco;
+          int fifo1 = open(fifoname, O_WRONLY);
+          write(fifo1, &new_info, sizeof(Info));
+          close(fifo1);
+        } else if (fifoid.cod == -1) {
+        } else if (fifoid.quantidade != 0 && fifoid.cod != -1) {
+          Info new_info = EmptyInfo;
+          cria_venda(venda_new, fifoid.cod, fifoid.quantidade);
+          memset(venda_new, 0, sizeof(venda_new));
+          int fifo1 = open(fifoname, O_WRONLY);
+          new_info.stock = atualiza_stock(fifoid.cod, fifoid.quantidade);
+          write(fifo1, &new_info, sizeof(Info));
+          close(fifo1);
         }
-        fifoid = EmptyStruct;
       }
+      fifoid = EmptyPFifo;
       close(fifo0);
     }
     _exit(0);
