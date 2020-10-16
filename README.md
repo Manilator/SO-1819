@@ -41,7 +41,7 @@
 To-do
 
 ### Built With
-* [C]
+* C
 
 
 <!-- GETTING STARTED -->
